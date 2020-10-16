@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace UnityARMiniGames
@@ -42,7 +43,7 @@ namespace UnityARMiniGames
 
             public float t = 0;//time
 
-            public Vector3 Pos => new Vector3(this.r, this.h, 0);
+            public float3 Pos => new float3(this.r, this.h, 0);
             public Quaternion Rot => Quaternion.Euler(0, 0, this.y * Mathf.Rad2Deg);
 
             public Quaternion RotModel => Quaternion.Euler(0, 0, (this.y + this.attackAngle) * Mathf.Rad2Deg);
@@ -106,22 +107,23 @@ namespace UnityARMiniGames
             return yn;
         }
 
-        public static void OnDrawGizmos(Quaternion q, Runtime runtime, Parameter parameter)
+        public static void OnDrawGizmos(Quaternion q, float3 t, Runtime runtime, Parameter parameter)
         {
             Gizmos.color = parameter.color;
             runtime.Init(parameter);
 
-            var pos = new Vector3(runtime.Pos.x, runtime.Pos.y, 0);
+            var pos = new float3(runtime.Pos.x, runtime.Pos.y, 0);
             pos = q * pos;
+            pos += t;
             Gizmos.DrawRay(pos, q * runtime.Rot * Vector3.right);
 
             for (var i = 0; i < 5000; ++i)
             {
-                var prev = new Vector3(runtime.Pos.x, runtime.Pos.y, 0);
+                var prev = new float3(runtime.Pos.x, runtime.Pos.y, 0);
                 Process(0.001f, runtime, parameter);
-                pos = new Vector3(runtime.Pos.x, runtime.Pos.y, 0);
+                pos = new float3(runtime.Pos.x, runtime.Pos.y, 0);
 
-                Gizmos.DrawLine(q * prev, q * pos);
+                Gizmos.DrawLine(new float3(q * prev) + t, new float3(q * pos) + t);
             }
         }
     }
