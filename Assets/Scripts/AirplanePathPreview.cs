@@ -8,7 +8,7 @@ using UnityTools.Debuging;
 
 namespace UnityARMiniGames
 {
-    public class AirplanePathPreview : MonoBehaviour, ARWorld.ARWorldUser, AirplaneManager.IAirplaneManagerUser
+    public class AirplanePathPreview : MonoBehaviour, ARWorld.IARWorldUser, AirplaneManager.IAirplaneManagerUser
     {
         public ARWorld World { get; set; }
         public AirplaneManager Manager { get; set; }

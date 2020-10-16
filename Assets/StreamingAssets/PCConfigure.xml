@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PCConfigureData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <pcList>
+    <PCInfo>
+      <name>DevPC</name>
+      <ipAddress>10.0.100.195</ipAddress>
+      <role>Development</role>
+      <ports>
+        <Port>
+          <name>RemoteDebug</name>
+          <port>23456</port>
+        </Port>
+      </ports>
+    </PCInfo>
+  </pcList>
+</PCConfigureData>
