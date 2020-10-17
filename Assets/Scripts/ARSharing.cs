@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityTools.Common;
 using UnityTools.Debuging;
@@ -23,12 +24,12 @@ namespace UnityARMiniGames
         {
             public PCInfo server;
 
-            public Transform serverCamera;
+            public float3 position;
+            public Quaternion rotation;
+            public float3 scale;
         }
 
 
-        public Data CurrentData { get; set; }
-        public bool IsServer { get; set; }
         public ARWorld World { get; set; }
 
         public class SharingSocket : UDPSocket<Data>
@@ -41,9 +42,9 @@ namespace UnityARMiniGames
 
             public override void OnMessage(SocketData socket, Data data)
             {
-                this.sharing.CurrentData = data;
+                this.sharing.currentData = data;
+                this.sharing.isServer = false;
             }
-
             public override byte[] OnSerialize(Data data)
             {
                 var str = JsonUtility.ToJson(data);
@@ -57,11 +58,10 @@ namespace UnityARMiniGames
                 return JsonUtility.FromJson<Data>(str);
             }
         }
+        [SerializeField] protected Data currentData;
 
         protected UDPSocket<Data> sender;
-        protected short port = 0;
-        protected UDPSocket<Data> discover;
-
+        protected bool isServer = true;
         protected PCInfo current;
         public void OnLaunchEvent(ARLauncher.Data data, Launcher<ARLauncher.Data>.LaunchEvent levent)
         {
@@ -79,40 +79,32 @@ namespace UnityARMiniGames
 
         protected IEnumerator Discover(ARSharingConfigure.ARData data)
         {
-            this.CurrentData = null;
-            if (this.discover != null) this.discover.Dispose();
-            this.discover = new UDPSocket<Data>();
-            this.discover.StartReceive(data.scanPort.port);
+            if (this.sender != null) this.sender.Dispose();
+            this.sender = new SharingSocket(this);
+            this.sender.StartReceive(data.scanPort.port);
             yield return new WaitForSeconds(3);
 
-            this.StartNetworkSharing(data);
-        }
-
-        protected void StartNetworkSharing(ARSharingConfigure.ARData data)
-        {
-            if (this.discover != null) this.discover.Dispose();
-            if (this.CurrentData == null)
+            if (this.isServer)
             {
-                //if server not find, then start as new server
-                this.CurrentData = new Data();
-                this.CurrentData.server = this.current;
+                this.currentData.server = this.current;
+                this.sender.Dispose();
                 this.sender = new SharingSocket(this);
-                this.port = data.scanPort.port;
-                this.IsServer = true;
-
                 LogTool.Log("Start as server", LogLevel.Dev, LogChannel.Network);
 
+                while (true)
+                {
+                    this.currentData.position = this.World.ARCamera.transform.position;
+                    this.currentData.rotation = this.World.ARCamera.transform.rotation;
+                    this.currentData.scale = this.World.ARCamera.transform.localScale;
+                    this.sender.Broadcast(this.currentData, data.scanPort.port);
+                    yield return new WaitForSeconds(0.5f);
+                }
             }
             else
             {
                 //otherwise start receiving data from server
-                if (this.sender != null) this.sender.Dispose();
-                this.sender = new SharingSocket(this);
-                this.sender.StartReceive(data.scanPort.port);
-                this.IsServer = false;
                 LogTool.Log("Start as client", LogLevel.Dev, LogChannel.Network);
             }
-
         }
 
         public void OnInit(NetworkController.NetworkData networkData)
@@ -120,14 +112,5 @@ namespace UnityARMiniGames
             this.current = networkData.current;
         }
 
-
-        protected void Update()
-        {
-            if (this.IsServer)
-            {
-                this.CurrentData.serverCamera = this.World.ARCamera.transform;
-                this.sender.Broadcast(this.CurrentData, this.port);
-            }
-        }
     }
 }

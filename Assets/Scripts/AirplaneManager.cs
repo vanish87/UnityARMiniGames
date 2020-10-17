@@ -32,13 +32,17 @@ namespace UnityARMiniGames
 
         protected void Update()
         {
-            // if (Input.touchCount > 0)
-            // {
-            //     var pos = Input.GetTouch(0).position;
-            //     var ray = this.World.ARCamera.ScreenPointToRay(pos);
+            if (Input.touchCount > 0)
+            {
+                var touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Ended)
+                {
+                    // var ray = this.World.ARCamera.ScreenPointToRay(pos);
 
-            //     this.CreatePlane(1);
-            // }
+                    this.CreateAirplane(1);
+                }
+
+            }
             if (Input.GetKeyDown(KeyCode.I))
             {
                 var ray = new Ray(this.World.ARCamera.transform.position, this.World.ARCamera.transform.forward);
@@ -49,7 +53,7 @@ namespace UnityARMiniGames
             this.UpdateLocalRotation();
 
             var speed = this.CheckSwipe();
-            if(speed > 0)
+            if (speed > 0)
             {
                 this.CreateAirplane(speed);
             }
@@ -62,24 +66,24 @@ namespace UnityARMiniGames
             if (Input.touchCount > 0)
             {
                 var touch = Input.GetTouch(0);
-                if(touch.phase == TouchPhase.Began)
+                if (touch.phase == TouchPhase.Began)
                 {
                     swipeTimer = 0;
                     startPos = touch.position;
                 }
                 else
-                if(touch.phase == TouchPhase.Moved)
+                if (touch.phase == TouchPhase.Moved)
                 {
                     swipeTimer += Time.deltaTime;
                 }
                 else
-                if(touch.phase == TouchPhase.Ended)
+                if (touch.phase == TouchPhase.Ended)
                 {
                     var speed = math.distance(touch.position, this.startPos) / this.swipeTimer;
                     if (this.swipeTimer > 0.3f)
                     {
                         return speed;
-                    } 
+                    }
                 }
             }
             return -1;

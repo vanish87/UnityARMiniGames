@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
@@ -19,25 +22,44 @@ namespace UnityARMiniGames
             ARWorld World { get; set; }
         }
 
+        [System.Serializable]
+        public class SyncedData
+        {
+            public float3 position;
+            public Quaternion rotation;
+            public float3 scale;
+
+        }
+
 
         public string HashString => this.ToString();
 
         public byte[] OnSerialize()
         {
-            var str = JsonUtility.ToJson(this.ARCamera.transform);
-            var data = Serialization.ObjectToByteArray(str);
-            return CompressTool.Compress(data);
+            var cam = this.ARCamera.transform;
+            var data = new SyncedData();
+            data.position = cam.position;
+            data.rotation = cam.rotation;
+            data.scale = cam.localScale;
+            var str = JsonUtility.ToJson(data);
+            return CompressTool.Compress(Serialization.ObjectToByteArray(str));
         }
 
         public void OnDeserialize(byte[] data)
         {
-            var str = Serialization.ByteArrayToObject<string>(CompressTool.Decompress(data));
-            var remote = JsonUtility.FromJson<Transform>(str);
-            this.ARCamera.transform.position = remote.position;
-            this.ARCamera.transform.rotation = remote.rotation;
-            this.ARCamera.transform.localScale = remote.localScale;
+            var raw = CompressTool.Decompress(data);
+            var str = Serialization.ByteArrayToObject<string>(raw);
+            var remote = JsonUtility.FromJson<SyncedData>(str);
+            if(this.syncedData == null) this.syncedData = new SyncedData();
+            lock (this.syncedData)
+            {
+                this.syncedData.position = remote.position;
+                this.syncedData.rotation = remote.rotation;
+                this.syncedData.scale = remote.scale;
+            }
         }
         public Camera ARCamera => this.currentOrigin.camera;
+        protected SyncedData syncedData;
 
 
         [SerializeField] protected ARSessionOrigin currentOrigin;
@@ -60,6 +82,15 @@ namespace UnityARMiniGames
         protected void OnDisable()
         {
             this.planeManager.planesChanged -= this.OnPlaneChanged;
+        }
+        protected void Update()
+        {
+            if (this.syncedData != null)
+            {
+                this.ARCamera.transform.position = this.syncedData.position;
+                this.ARCamera.transform.rotation = this.syncedData.rotation;
+                this.ARCamera.transform.localScale = this.syncedData.scale;
+            }
         }
 
         protected void OnPlaneChanged(ARPlanesChangedEventArgs obj)

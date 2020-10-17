@@ -3,7 +3,7 @@
   <pcList>
     <PCInfo>
       <name>DevPC</name>
-      <ipAddress>10.0.100.195</ipAddress>
+      <ipAddress>192.168.86.50</ipAddress>
       <role>Development</role>
       <ports>
         <Port>

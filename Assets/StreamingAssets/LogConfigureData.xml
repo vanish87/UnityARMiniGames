@@ -2,7 +2,7 @@
 <LogConfigureData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <logPC>
     <name>OutputPC</name>
-    <ipAddress>10.0.100.195</ipAddress>
+    <ipAddress>192.168.86.50</ipAddress>
     <role>Development</role>
     <ports />
     <logPort>13210</logPort>

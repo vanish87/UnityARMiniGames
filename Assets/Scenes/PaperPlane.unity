@@ -548,8 +548,8 @@ MonoBehaviour:
   fileName: PCConfigure.xml
   data:
     pcList:
-    - name: Dev
-      ipAddress: 10.0.100.195
+    - name: DevPC
+      ipAddress: 192.168.86.50
       role: 2
       ports:
       - name: RemoteDebug
@@ -565,6 +565,7 @@ GameObject:
   - component: {fileID: 401835277}
   - component: {fileID: 401835279}
   - component: {fileID: 401835278}
+  - component: {fileID: 401835280}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -588,8 +589,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 126, y: -59}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: 660, y: -466}
+  m_SizeDelta: {x: 1200, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &401835278
 MonoBehaviour:
@@ -612,18 +613,18 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 22
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 2
     m_MaxSize: 40
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Test
+  m_Text: Log
 --- !u!222 &401835279
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -632,6 +633,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 401835276}
   m_CullTransparentMesh: 0
+--- !u!114 &401835280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 401835276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69360c5cf0a6f3249bdd3ef5e23ada81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &432722572
 GameObject:
   m_ObjectHideFlags: 0
@@ -1246,7 +1259,7 @@ MonoBehaviour:
   data:
     logPC:
       name: OutputPC
-      ipAddress: 10.0.100.195
+      ipAddress: 192.168.86.50
       role: 2
       ports: []
       logPort: 13210

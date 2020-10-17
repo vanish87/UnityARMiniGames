@@ -27,7 +27,7 @@ namespace UnityARMiniGames
             {
                 //this is ar device,so send data to dev pc
                 this.devPC = SocketData.Make(networkData.devPC.ipAddress, port.port);
-                LogTool.Log("Start send remote debug info to " + networkData.devPC.ipAddress + " " + port.port, LogLevel.Dev, LogChannel.Network);
+                LogTool.Log("Start send remote debug info to " + this.devPC.endPoint.ToString(), LogLevel.Dev, LogChannel.Network);
             }
             else
             {
