@@ -95,7 +95,7 @@ namespace UnityARMiniGames
         }
         protected static float DyDt(float y, float t, Runtime r, Parameter p)
         {
-            return (r.CL * (0.5f * p.p * r.v * r.v) * p.S / p.m - p.g * Mathf.Cos(y)) / r.v;
+            return (r.CL * (0.5f * p.p * r.v * r.v) * p.S / p.m - p.g * Mathf.Cos(y)) / (r.v != 0 ? r.v : 1);
         }
 
         protected static float Step(DyDx<float> func, float yn, float xn, float h, Runtime runtime, Parameter parameter)

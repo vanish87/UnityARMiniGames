@@ -55,6 +55,7 @@ namespace UnityARMiniGames
             var speed = this.CheckSwipe();
             if (speed > 0)
             {
+                this.parameter.initSpeed = speed;
                 this.CreateAirplane(speed);
             }
 

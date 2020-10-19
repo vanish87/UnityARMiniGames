@@ -16,6 +16,7 @@ namespace UnityARMiniGames
         [SerializeField] protected float previewTimeLength = 5;
         [SerializeField] protected float dt = 0.001f;
         [SerializeField] protected float3 posOffset = new float3();
+        [SerializeField] protected float rotate = 0f;
         protected LineRenderer lineRenderer;
         protected Airplane.Runtime runtime = new Airplane.Runtime();
 
@@ -33,9 +34,10 @@ namespace UnityARMiniGames
 
         protected void UpdateLinePostions()
         {
-            var count = Mathf.CeilToInt(this.previewTimeLength / dt);
+            var count = Mathf.CeilToInt(this.previewTimeLength / dt * ((Time.time % 5) / 5f));
             var vcount = 100;
-            if (this.lineRenderer.positionCount != count / vcount) this.lineRenderer.positionCount = count / vcount;
+            var pcount = Mathf.CeilToInt(count * 1f / vcount);
+            if (this.lineRenderer.positionCount != pcount) this.lineRenderer.positionCount = pcount;
 
             this.runtime.Init(Manager.CurrentParameter);
 
@@ -45,9 +47,10 @@ namespace UnityARMiniGames
                 {
                     float3 cameraOffset = this.World.ARCamera.transform.position;
                     var pos = this.runtime.Pos + this.posOffset;
-                    pos = Manager.CurrentLocalRotation * pos;
+                    pos = Manager.CurrentLocalRotation * Quaternion.Euler(0,this.rotate,0) * pos;
                     pos += cameraOffset;
                     this.lineRenderer.SetPosition(p / vcount, pos);
+                    // Debug.Log(p/vcount + " " + this.lineRenderer.positionCount);
                 }
                 Airplane.Process(this.dt, this.runtime, Manager.CurrentParameter);
             }

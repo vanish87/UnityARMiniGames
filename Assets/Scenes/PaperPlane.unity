@@ -195,7 +195,8 @@ MonoBehaviour:
   posOffset:
     x: 0
     y: 0
-    z: 0.05
+    z: 0.1
+  rotate: 20
 --- !u!120 &74925155
 LineRenderer:
   m_ObjectHideFlags: 0
