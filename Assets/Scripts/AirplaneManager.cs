@@ -83,7 +83,7 @@ namespace UnityARMiniGames
                 else
                 if (touch.phase == TouchPhase.Ended)
                 {
-                    if(this.swipeTimer > 0.1f)
+                    if(this.swipeTimer > 0)
                     {
                         var deltaDistance = (new float2(touch.position) - this.startPos) / new float2(Screen.width, Screen.height);
                         var speed = math.length(deltaDistance) / this.swipeTimer;
