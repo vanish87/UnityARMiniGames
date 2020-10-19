@@ -21,7 +21,7 @@ namespace UnityARMiniGames
 
         protected void Start()
         {
-            this.lineRenderer = ObjectTool.FindOrAddTypeInComponentsAndChilden<LineRenderer>(this.gameObject);
+            this.lineRenderer = ObjectTool.FindOrAddTypeInComponentsAndChildren<LineRenderer>(this.gameObject);
             LogTool.AssertNotNull(this.lineRenderer);
             LogTool.AssertIsTrue(this.dt > 0);
         }

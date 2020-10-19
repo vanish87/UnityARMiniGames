@@ -1,12 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LogConfigureData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <logPC>
-    <name>OutputPC</name>
-    <ipAddress>192.168.86.50</ipAddress>
-    <role>Development</role>
-    <ports />
-    <logPort>13210</logPort>
-  </logPC>
+  <logPort>13210</logPort>
+  <logPCs>
+    <PCInfo>
+      <name>HomeLog</name>
+      <ipAddress>192.168.86.50</ipAddress>
+      <role>None</role>
+      <ports />
+    </PCInfo>
+    <PCInfo>
+      <name>WorkLog</name>
+      <ipAddress>10.0.105.37</ipAddress>
+      <role>None</role>
+      <ports />
+    </PCInfo>
+  </logPCs>
   <channel>Everything</channel>
   <levels>
     <LevelData>

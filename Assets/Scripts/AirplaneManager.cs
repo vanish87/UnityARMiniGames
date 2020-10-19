@@ -20,7 +20,7 @@ namespace UnityARMiniGames
         public Quaternion CurrentLocalRotation => this.localRotation;
         [SerializeField] protected GameObject airplanePrefab = null;
         [SerializeField] protected Airplane.Parameter parameter = new Airplane.Parameter();
-        [SerializeField] protected List<PaperAirplane> planes = new List<PaperAirplane>();
+        // [SerializeField] protected List<PaperAirplane> planes = new List<PaperAirplane>();
 
         protected Quaternion localRotation;
 
@@ -32,21 +32,21 @@ namespace UnityARMiniGames
 
         protected void Update()
         {
-            if (Input.touchCount > 0)
+            if (Input.touchCount > 1)
             {
                 var touch = Input.GetTouch(0);
                 if (touch.phase == TouchPhase.Ended)
                 {
                     // var ray = this.World.ARCamera.ScreenPointToRay(pos);
 
-                    this.CreateAirplane(1);
+                    this.CreateAirplane();
                 }
 
             }
             if (Input.GetKeyDown(KeyCode.I))
             {
                 var ray = new Ray(this.World.ARCamera.transform.position, this.World.ARCamera.transform.forward);
-                this.CreateAirplane(1);
+                this.CreateAirplane();
             }
 
             this.UpdateCurrentParameter();
@@ -57,6 +57,9 @@ namespace UnityARMiniGames
             {
                 this.CreateAirplane(speed);
             }
+
+
+            // this.CheckDestory();
         }
 
         protected float swipeTimer = 0;
@@ -74,14 +77,18 @@ namespace UnityARMiniGames
                 else
                 if (touch.phase == TouchPhase.Moved)
                 {
-                    swipeTimer += Time.deltaTime;
+                    swipeTimer += touch.deltaTime;
                 }
                 else
                 if (touch.phase == TouchPhase.Ended)
                 {
-                    var speed = math.distance(touch.position, this.startPos) / this.swipeTimer;
-                    if (this.swipeTimer > 0.3f)
+                    if(this.swipeTimer > 0.1f)
                     {
+                        var deltaDistance = (new float2(touch.position) - this.startPos) / new float2(Screen.width, Screen.height);
+                        var speed = math.length(deltaDistance) / this.swipeTimer;
+                        speed *= 2;
+                        LogTool.Log("speed " + speed);
+                        LogTool.Log("timer " + this.swipeTimer);
                         return speed;
                     }
                 }
@@ -89,21 +96,33 @@ namespace UnityARMiniGames
             return -1;
         }
 
-        protected void CreateAirplane(float speed)
+        protected void CreateAirplane(float speed = 0)
         {
-            LogTool.AssertIsTrue(speed > 0);
-
             var go = GameObject.Instantiate(this.airplanePrefab, this.transform);
             var plane = go.GetComponent<PaperAirplane>();
             LogTool.AssertNotNull(plane);
 
             var para = this.parameter.DeepCopyJson();
-            para.initSpeed = speed;
+            para.initSpeed = speed>0?speed:para.initSpeed;
             var offset = this.World.ARCamera.transform.position;
             plane.Init(offset, this.localRotation, para);
 
-            this.planes.Add(plane);
+            // this.planes.Add(plane);
         }
+
+        // protected void CheckDestory()
+        // {
+        //     for(var i = 0; i < this.planes.Count; ++i)
+        //     {
+        //         var p = this.planes[i];
+        //         if(p.transform.position.y < -1)
+        //         {
+        //             this.planes.RemoveAt(i);
+        //             p.gameObject.DestoryObj();
+        //             i--;
+        //         }
+        //     }
+        // }
         protected void UpdateCurrentParameter()
         {
             var dir = this.World.ARCamera.transform.forward;
