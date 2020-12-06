@@ -13,6 +13,7 @@ and is controlled by initial speed, initial speed, attack angle, wingspan ratio,
 
 These parameters are mapped to smartphone camera position/orientation and swipe speed finger touch.
 
-[![](gif/paperairplane.gif)](https://youtu.be/cxWRUij9EBA)
-
 [Youtube Video](https://youtu.be/cxWRUij9EBA)
+
+![](gif/paperairplane.gif)
+
